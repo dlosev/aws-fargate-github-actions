@@ -10,7 +10,7 @@ on:
 
 env:
   AWS_REGION: eu-central-1
-  ECR_REPOSITORY: repo1
+  IMAGE_NAME: repo1/my-nginx
   IMAGE_TAG: my-nginx:latest
 
 jobs:
@@ -46,8 +46,8 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker build -t $ECR_REGISTRY/$IMAGE_NAME:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
 
       - name: create a github deployment
         uses: bobheadxi/deployments@v0.5.2
