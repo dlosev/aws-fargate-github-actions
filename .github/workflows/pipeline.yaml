@@ -11,10 +11,10 @@ on:
 env:
   AWS_REGION: eu-central-1
   IMAGE_NAME: repo1/my-nginx
-  IMAGE_TAG: my-nginx:latest
+  IMAGE_TAG: latest
 
 jobs:
-  deploy:
+  deploy-aws:
 #    if: |
 #      (github.event.action == 'labeled' && github.event.label.name == 'deploy') ||
 #      (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'deploy'))
@@ -62,7 +62,6 @@ jobs:
 
       - name: update the github deployment status
         uses: bobheadxi/deployments@v0.5.2
-        if: always()
         with:
           step: finish
           token: ${{ secrets.GITHUB_TOKEN }}
