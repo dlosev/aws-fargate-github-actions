@@ -64,14 +64,14 @@ jobs:
         uses: youyo/aws-cdk-github-actions@v2
         with:
           cdk_subcommand: 'bootstrap'
-          cdk_stack: ''
+          cdk_stack: ' '
           working_dir: './cdk'
 
       - name: cdk deploy
         uses: youyo/aws-cdk-github-actions@v2
         with:
           cdk_subcommand: 'deploy'
-          cdk_stack: ''
+          cdk_stack: ' '
           cdk_args: '--require-approval never'
           working_dir: './cdk'
         env:
