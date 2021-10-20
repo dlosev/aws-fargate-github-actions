@@ -60,6 +60,12 @@ jobs:
           no_override: false
           transient: true
 
+      - name: cdk bootstrap
+        uses: youyo/aws-cdk-github-actions@v2
+        with:
+          cdk_subcommand: 'bootstrap'
+          working_dir: './cdk'
+
       - name: cdk deploy
         uses: youyo/aws-cdk-github-actions@v2
         with:
