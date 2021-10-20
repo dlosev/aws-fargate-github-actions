@@ -6,7 +6,7 @@ on:
   push:
     branches-ignore:
       - release
-      - master
+#      - master
 
 env:
   AWS_REGION: eu-central-1
@@ -15,9 +15,9 @@ env:
 
 jobs:
   deploy:
-    if: |
-      (github.event.action == 'labeled' && github.event.label.name == 'deploy') ||
-      (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'deploy'))
+#    if: |
+#      (github.event.action == 'labeled' && github.event.label.name == 'deploy') ||
+#      (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'deploy'))
 
     runs-on: ubuntu-latest
 
