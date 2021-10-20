@@ -1,0 +1,22 @@
+{
+  "containerDefinitions": [
+    {
+      "essential": true,
+      "image": "505510851740.dkr.ecr.eu-central-1.amazonaws.com/app:latest",
+      "name": "nginx",
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 80,
+          "protocol": "tcp"
+        }
+      ]
+    }
+  ],
+  "executionRoleArn": "arn:aws:iam::505510851740:role/FargateTestAppRole",
+  "family": "fargate-task-definition",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ]
+}
