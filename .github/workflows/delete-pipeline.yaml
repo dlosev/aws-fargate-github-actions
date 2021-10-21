@@ -6,8 +6,10 @@ on:
 
 jobs:
   delete:
-    if: (github.event.action == 'labeled' && contains(github.event.pull_request.labels.*.name, 'deploy'))
+    if: (github.event.action == 'labeled' && contains(toJson(github.event.pull_request.labels), 'eu-'))
+
     runs-on: ubuntu-latest
+
     steps:
       - run: |
           echo PR #${{ github.event.number }} has been merged
