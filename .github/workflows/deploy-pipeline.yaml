@@ -8,6 +8,10 @@ on:
 #      - release
 #      - master
 
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   AWS_REGION: eu-central-1
   ECR_REPOSITORY: app
@@ -75,7 +79,7 @@ jobs:
 
       - run: |
           label=$(echo '${{ join(github.event.pull_request.labels.*.name) }}' | sed 's/.*[\^ ,]*\(FargateService-[0-9]\{1,\}\).*/\1/')
-          echo "github.event: $label}"
+          echo "github.event: $label"
 #
 #      - name: cdk install
 #        run: |
