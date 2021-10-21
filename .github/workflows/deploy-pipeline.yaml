@@ -3,9 +3,9 @@ name: PR deploy
 on:
   pull_request:
     types: [ labeled ]
-  push:
-    branches-ignore:
-      - release
+#  push:
+#    branches-ignore:
+#      - release
 #      - master
 
 env:
@@ -15,8 +15,8 @@ env:
 
 jobs:
   deploy-aws:
-#    if: |
-#      (github.event.action == 'labeled' && github.event.label.name == 'deploy')
+    if: |
+      (github.event.action == 'labeled' && github.event.label.name == 'deploy')
 #      (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'deploy'))
 
     runs-on: ubuntu-latest
