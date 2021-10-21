@@ -72,6 +72,11 @@ jobs:
           label: ${{ env.AWS_REGION }}
         with:
           labels: ${{ env.label }}
+
+      - env:
+          testEnv: join(github.event.pull_request.labels)
+        run: |
+          echo "testEnv: $testEnv"
 #
 #      - name: cdk install
 #        run: |
