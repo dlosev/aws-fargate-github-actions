@@ -12,6 +12,7 @@ env:
   AWS_REGION: eu-central-1
   ECR_REPOSITORY: app
   IMAGE_TAG: latest
+  TASK_DEFINITION_ARN: arn:aws:ecs:eu-central-1:505510851740:task-definition/FargateStack:24
 
 jobs:
   deploy-aws:
