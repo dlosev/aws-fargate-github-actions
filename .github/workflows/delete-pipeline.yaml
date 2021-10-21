@@ -6,7 +6,7 @@ on:
 
 jobs:
   delete:
-    if: (github.event.action == 'labeled' && contains(toJson(github.event.pull_request.labels), 'eu-'))
+    if: (contains(join(github.event.pull_request.labels), 'eu-'))
 
     runs-on: ubuntu-latest
 
