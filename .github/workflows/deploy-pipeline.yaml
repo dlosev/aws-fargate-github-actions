@@ -74,7 +74,7 @@ jobs:
           labels: ${{ env.label }}
 
       - run: |
-          echo "github.event: ${{ github.event.pull_request.labels.0.name }}"
+          echo "github.event: ${{ github.event.pull_request.labels[0].name }}"
 #
 #      - name: cdk install
 #        run: |
