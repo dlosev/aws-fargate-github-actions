@@ -14,5 +14,5 @@ jobs:
       - name: delete AWS stack
         run: |
           cloudformationStackId=$(echo '${{ join(github.event.pull_request.labels.*.name) }}' | sed 's/.*[\^ ,]*\(FargateStack-[0-9]\{1,\}\).*/\1/')
-          aws cloudformation delete-stac --stack-name $cloudformationStackId
+          aws cloudformation delete-stack --stack-name $cloudformationStackId
 
