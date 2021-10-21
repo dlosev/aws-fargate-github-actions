@@ -70,7 +70,7 @@ jobs:
       - uses: actions-ecosystem/action-add-labels@v1
         with:
           labels: |
-            ${{ env.CDK_STACK_NAME-env.CDK_STACK_SHA }}
+            my-label
 #
 #      - name: cdk install
 #        run: |
