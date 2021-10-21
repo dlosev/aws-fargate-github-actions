@@ -38,16 +38,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag, and push image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#      - name: Login to Amazon ECR
+#        id: login-ecr
+#        uses: aws-actions/amazon-ecr-login@v1
+#
+#      - name: Build, tag, and push image to Amazon ECR
+#        env:
+#          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#        run: |
+#          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+#          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: create a github deployment
         uses: bobheadxi/deployments@v0.5.2
@@ -60,23 +60,20 @@ jobs:
           no_override: false
           transient: true
 
-      - name: cdk bootstrap
-        uses: youyo/aws-cdk-github-actions@v2
-        with:
-          cdk_subcommand: 'bootstrap'
-          cdk_stack: "aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION }}"
-          working_dir: './cdk'
+      - name: cdk install
+        run: |
+          mkdir cdk && cd cdk
+          npm -g install typescript aws-cdk
+          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION }}
+          cdk init app --language typescript
+          rm -rf bin/* lib/*
+          cp ../cdk.ts ./bin/ && cp ../ecs-stack.ts ./lib
+          npm install @aws-cdk/aws-ec2 @aws-cdk/aws-ecs @aws-cdk/custom-resources
 
       - name: cdk deploy
-        uses: youyo/aws-cdk-github-actions@v2
-        with:
-          cdk_subcommand: 'deploy'
-          cdk_args: '--require-approval never'
-          working_dir: './cdk'
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
+        run: |
+          cd cdk
+          cdk deploy --require-approval never
 
       - name: update the github deployment status
         uses: bobheadxi/deployments@v0.5.2

@@ -1,22 +1,51 @@
 {
+  "family": "FargateStack",
+  "executionRoleArn": "arn:aws:iam::505510851740:role/FargateEcsTaskExecutionRole",
   "containerDefinitions": [
     {
-      "essential": true,
-      "image": "505510851740.dkr.ecr.eu-central-1.amazonaws.com/app:latest",
-      "name": "nginx",
+      "dnsSearchDomains": [],
+      "environmentFiles": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": [],
+        "options": {
+          "awslogs-group": "/ecs/fargateServiceLogGroup",
+          "awslogs-region": "eu-central-1",
+          "awslogs-stream-prefix": "fargate-service"
+        }
+      },
+      "entryPoint": [],
       "portMappings": [
         {
-          "containerPort": 80,
           "hostPort": 80,
-          "protocol": "tcp"
+          "protocol": "tcp",
+          "containerPort": 80
         }
-      ]
+      ],
+      "command": [],
+      "cpu": 0,
+      "environment": [],
+      "ulimits": [],
+      "dnsServers": [],
+      "mountPoints": [],
+      "secrets": [],
+      "dockerSecurityOptions": [],
+      "volumesFrom": [],
+      "image": "505510851740.dkr.ecr.eu-central-1.amazonaws.com/app",
+      "essential": true,
+      "links": [],
+      "extraHosts": [],
+      "dockerLabels": {},
+      "systemControls": [],
+      "name": "app"
     }
   ],
-  "executionRoleArn": "arn:aws:iam::505510851740:role/FargateTestAppRole",
-  "family": "fargate-task-definition",
-  "networkMode": "awsvpc",
+  "placementConstraints": [],
   "requiresCompatibilities": [
     "FARGATE"
-  ]
+  ],
+  "networkMode": "awsvpc",
+  "cpu": "256",
+  "memory": "512",
+  "volumes": []
 }
