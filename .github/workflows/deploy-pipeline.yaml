@@ -16,7 +16,7 @@ env:
 jobs:
   deploy-aws:
     if: |
-      contains(github.event.pull_request.labels.*.name, 'deploy')
+      github.event.action == 'labeled' && contains(github.event.pull_request.labels.*.name, 'deploy')
 #      (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'deploy'))
 
     runs-on: ubuntu-latest
@@ -73,10 +73,8 @@ jobs:
         with:
           labels: ${{ env.label }}
 
-      - env:
-          testEnv: ${{ github.event.pull_request.labels.*.name }}
-        run: |
-          echo "testEnv: $testEnv"
+      - run: |
+          echo "github.event: ${{ github.event }}"
 #
 #      - name: cdk install
 #        run: |
