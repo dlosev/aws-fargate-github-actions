@@ -68,9 +68,10 @@ jobs:
 #          echo "CDK_STACK_SHA=$(date +'%s')" >> $GITHUB_ENV
 
       - uses: actions-ecosystem/action-add-labels@v1
+        env:
+          label: env.AWS_REGION
         with:
-          labels: |
-            $AWS_REGION
+          labels: ${{ env.label }}
 #
 #      - name: cdk install
 #        run: |
