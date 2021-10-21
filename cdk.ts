@@ -7,7 +7,7 @@ import * as ecs from "@aws-cdk/aws-ecs";
 import * as cr from "@aws-cdk/custom-resources";
 
 class FargateStack extends cdk.Stack {
-    constructor(scope: cdk.Construct, id: string, time: number, props?: cdk.StackProps) {
+    constructor(scope: cdk.Construct, id: string, sha: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
         const taskDefinitionArn = process.env.TASK_DEFINITION_ARN;
@@ -83,7 +83,7 @@ class FargateStack extends cdk.Stack {
         );
 
         function appendPostfix(name: string): string {
-            return `${name}-${time}`;
+            return `${name}-${sha}`;
         }
 
         function createCustomResource(scope: cdk.Construct, name: string, service: string, action: string, path: string, parameters?: any): cr.AwsCustomResource {
@@ -111,7 +111,13 @@ const app = new cdk.App();
 
 const time = new Date().getTime();
 
-new FargateStack(app, `FargateStack-${time}`, time, {
+const cdkStackSha = process.env.CDK_STACK_SHA;
+
+if (!cdkStackSha) {
+    throw new Error('CDK_STACK_SHA environment variable is missing');
+}
+
+new FargateStack(app, `FargateStack-${cdkStackSha}`, cdkStackSha, {
     /* If you don't specify 'env', this stack will be environment-agnostic.
      * Account/Region-dependent features and context lookups will not work,
      * but a single synthesized template can be deployed anywhere. */

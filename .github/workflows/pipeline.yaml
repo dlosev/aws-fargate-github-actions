@@ -64,6 +64,7 @@ jobs:
         run: |
           TASK_DEFINITION_ARN=$(aws ecs register-task-definition --cli-input-json file://./ecs-taskdef.json | jq --raw-output '.taskDefinition.taskDefinitionArn')
           echo "TASK_DEFINITION_ARN=$(echo $TASK_DEFINITION_ARN)" >> $GITHUB_ENV
+          echo "CDK_STACK_SHA=$(date +'%s')" >> $GITHUB_ENV
 
       - name: cdk install
         run: |
