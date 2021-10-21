@@ -69,7 +69,7 @@ jobs:
 
       - uses: actions-ecosystem/action-add-labels@v1
         env:
-          label: env.AWS_REGION
+          label: ${{ env.AWS_REGION }}
         with:
           labels: ${{ env.label }}
 #
