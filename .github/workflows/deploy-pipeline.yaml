@@ -3,9 +3,9 @@ name: PR deploy
 on:
   pull_request:
     types: [ labeled ]
-#  push:
-#    branches-ignore:
-#      - release
+  push:
+    branches-ignore:
+      - release
 #      - master
 
 env:
