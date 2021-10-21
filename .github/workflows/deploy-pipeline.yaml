@@ -74,7 +74,7 @@ jobs:
           labels: ${{ env.label }}
 
       - env:
-          testEnv: ${{ join(github.event.pull_request.labels) }}
+          testEnv: ${{ github.event.pull_request.labels.*.name }}
         run: |
           echo "testEnv: $testEnv"
 #
