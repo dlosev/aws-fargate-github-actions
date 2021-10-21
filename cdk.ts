@@ -111,13 +111,17 @@ const app = new cdk.App();
 
 const time = new Date().getTime();
 
-const cdkStackSha = process.env.CDK_STACK_SHA;
+const cdkStackName = process.env.CDK_STACK_NAME;
+if (!cdkStackName) {
+    throw new Error('CDK_STACK_NAME environment variable is missing');
+}
 
+const cdkStackSha = process.env.CDK_STACK_SHA;
 if (!cdkStackSha) {
     throw new Error('CDK_STACK_SHA environment variable is missing');
 }
 
-new FargateStack(app, `FargateStack-${cdkStackSha}`, cdkStackSha, {
+new FargateStack(app, `${cdkStackName}-${cdkStackSha}`, cdkStackSha, {
     /* If you don't specify 'env', this stack will be environment-agnostic.
      * Account/Region-dependent features and context lookups will not work,
      * but a single synthesized template can be deployed anywhere. */

@@ -64,6 +64,7 @@ jobs:
         run: |
           TASK_DEFINITION_ARN=$(aws ecs register-task-definition --cli-input-json file://./ecs-taskdef.json | jq --raw-output '.taskDefinition.taskDefinitionArn')
           echo "TASK_DEFINITION_ARN=$(echo $TASK_DEFINITION_ARN)" >> $GITHUB_ENV
+          echo "CDK_STACK_NAME=FargateStack" >> $GITHUB_ENV
           echo "CDK_STACK_SHA=$(date +'%s')" >> $GITHUB_ENV
 
       - name: cdk install
@@ -80,6 +81,11 @@ jobs:
         run: |
           cd cdk
           cdk deploy --require-approval never
+
+      - name: show results
+        run: |
+          APP_IP=$(aws cloudformation describe-stacks --stack-name "$CDK_STACK_NAME-$CDK_STACK_SHA" --query "Stacks[0].Outputs[0].publicIp" --output text)
+          echo "Application is available on http://$APP_IP"
 
 #      - name: update the github deployment status
 #        uses: bobheadxi/deployments@v0.5.2
