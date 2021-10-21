@@ -15,8 +15,8 @@ env:
 
 jobs:
   deploy-aws:
-    if: |
-      (github.event.action == 'labeled' && github.event.label.name == 'deploy')
+#    if: |
+#      (github.event.action == 'labeled' && github.event.label.name == 'deploy')
 #      (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'deploy'))
 
     runs-on: ubuntu-latest
