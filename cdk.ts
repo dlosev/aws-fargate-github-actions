@@ -17,7 +17,7 @@ class FargateStack extends cdk.Stack {
         }
 
         const vpc = new ec2.Vpc(this, appendPostfix("ecs-vpc"), {
-            natGateways: 1,
+            natGateways: 0,
             subnetConfiguration: [
                 {
                     name: appendPostfix('public-subnet'),
