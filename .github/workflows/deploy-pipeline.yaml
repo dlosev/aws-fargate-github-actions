@@ -70,7 +70,7 @@ jobs:
       - uses: actions-ecosystem/action-add-labels@v1
         with:
           labels: |
-            env.AWS_REGION
+            $AWS_REGION
 #
 #      - name: cdk install
 #        run: |
