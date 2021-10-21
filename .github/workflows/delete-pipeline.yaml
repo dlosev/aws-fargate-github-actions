@@ -6,13 +6,13 @@ on:
 
 jobs:
   delete:
-    if: contains(join(github.event.pull_request.labels.*.name), 'FargateService')
+    if: contains(join(github.event.pull_request.labels.*.name), 'FargateStack')
 
     runs-on: ubuntu-latest
 
     steps:
       - name: delete AWS stack
         run: |
-          cloudformationStackId=$(echo '${{ join(github.event.pull_request.labels.*.name) }}' | sed 's/.*[\^ ,]*\(FargateService-[0-9]\{1,\}\).*/\1/')
+          cloudformationStackId=$(echo '${{ join(github.event.pull_request.labels.*.name) }}' | sed 's/.*[\^ ,]*\(FargateStack-[0-9]\{1,\}\).*/\1/')
           aws cloudformation delete-stac --stack-name $cloudformationStackId
 
