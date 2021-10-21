@@ -2,14 +2,17 @@ name: PR delete
 
 on:
   pull_request:
-    types: [ closed ]
+    types: [closed]
 
 jobs:
   delete:
-    if: (contains(join(github.event.pull_request.labels), 'eu-'))
+    if: contains(join(github.event.pull_request.labels.*.name), 'FargateService')
 
     runs-on: ubuntu-latest
 
     steps:
-      - run: |
-          echo PR #${{ github.event.number }} has been merged
+      - name: delete AWS stack
+        run: |
+          cloudformationStackId=$(echo '${{ join(github.event.pull_request.labels.*.name) }}' | sed 's/.*[\^ ,]*\(FargateService-[0-9]\{1,\}\).*/\1/')
+          aws cloudformation delete-stac --stack-name $cloudformationStackId
+

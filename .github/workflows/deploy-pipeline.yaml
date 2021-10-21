@@ -2,12 +2,10 @@ name: PR deploy
 
 on:
   pull_request:
-    types: [ labeled ]
-#  push:
-#    branches-ignore:
-#      - release
-#      - master
+    types: [labeled]
 
+# Prevent multiple workflows to be executed when PR has multiple labels
+# https://github.community/t/handling-multiple-pr-label-triggers/122093/4
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
@@ -19,9 +17,7 @@ env:
 
 jobs:
   deploy-aws:
-    if: |
-      github.event.action == 'labeled' && contains(join(github.event.pull_request.labels.*.name), 'deploy')
-#      (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'deploy'))
+    if: contains(join(github.event.pull_request.labels.*.name), 'deploy')
 
     runs-on: ubuntu-latest
 
