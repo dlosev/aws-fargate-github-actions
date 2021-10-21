@@ -2,10 +2,10 @@ name: PR deploy
 
 on:
   pull_request:
-    types: [labeled]
-  push:
-    branches-ignore:
-      - release
+    types: [ labeled ]
+#  push:
+#    branches-ignore:
+#      - release
 #      - master
 
 env:
@@ -15,8 +15,8 @@ env:
 
 jobs:
   deploy-aws:
-#    if: |
-#      (github.event.action == 'labeled' && github.event.label.name == 'deploy') ||
+    if: |
+      (github.event.action == 'labeled' && github.event.label.name == 'deploy')
 #      (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'deploy'))
 
     runs-on: ubuntu-latest
@@ -67,26 +67,38 @@ jobs:
           echo "CDK_STACK_NAME=FargateStack" >> $GITHUB_ENV
           echo "CDK_STACK_SHA=$(date +'%s')" >> $GITHUB_ENV
 
-      - name: cdk install
-        run: |
-          mkdir cdk && cd cdk
-          npm -g install typescript aws-cdk
-          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION }}
-          cdk init app --language typescript
-          rm -rf bin/*
-          cp ../cdk.ts ./bin/
-          npm install @aws-cdk/aws-ec2 @aws-cdk/aws-ecs @aws-cdk/custom-resources
+      - uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: |
+            ${{ env.CDK_STACK_NAME-env.CDK_STACK_SHA }}
+#
+#      - name: cdk install
+#        run: |
+#          mkdir cdk && cd cdk
+#          npm -g install typescript aws-cdk
+#          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION }}
+#          cdk init app --language typescript
+#          rm -rf bin/*
+#          cp ../cdk.ts ./bin/
+#          npm install @aws-cdk/aws-ec2 @aws-cdk/aws-ecs @aws-cdk/custom-resources
+#
+#      - name: cdk deploy
+#        run: |
+#          cd cdk
+#          cdk deploy --require-approval never
+#
+#      - name: show results
+#        run: |
+#          APP_IP=$(aws cloudformation describe-stacks --stack-name "$CDK_STACK_NAME-$CDK_STACK_SHA" --query "Stacks[0].Outputs[?OutputKey=='publicIp'].OutputValue" --output text)
+#          echo "APP_IP=$APP_IP" >> $GITHUB_ENV
+#          echo -e "\nCloudformation stack ID: $CDK_STACK_NAME-$CDK_STACK_SHA"
+#          echo "Application is available on http://$APP_IP"
 
-      - name: cdk deploy
-        run: |
-          cd cdk
-          cdk deploy --require-approval never
-
-      - name: show results
-        run: |
-          APP_IP=$(aws cloudformation describe-stacks --stack-name "$CDK_STACK_NAME-$CDK_STACK_SHA" --query "Stacks[0].Outputs[?OutputKey=='publicIp'].OutputValue" --output text)
-          echo -e "\nCloudformation stack ID: $CDK_STACK_NAME-$CDK_STACK_SHA"
-          echo "Application is available on http://$APP_IP"
+#      - uses: actions-ecosystem/action-add-labels@v1
+#        with:
+#          labels: |
+#            env.APP_IP
+#            ${{ env.CDK_STACK_NAME-env.CDK_STACK_SHA }}
 
 #      - name: update the github deployment status
 #        uses: bobheadxi/deployments@v0.5.2
