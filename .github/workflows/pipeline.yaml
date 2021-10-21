@@ -67,8 +67,8 @@ jobs:
           npm -g install typescript aws-cdk
           cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION }}
           cdk init app --language typescript
-          rm -rf bin/* lib/*
-          cp ../cdk.ts ./bin/ && cp ../ecs-stack.ts ./lib
+          rm -rf bin/*
+          cp ../cdk.ts ./bin/
           npm install @aws-cdk/aws-ec2 @aws-cdk/aws-ecs @aws-cdk/custom-resources
 
       - name: cdk deploy
