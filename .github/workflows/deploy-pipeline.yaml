@@ -111,6 +111,7 @@ jobs:
         id: result
         run: |
           echo "APP_IP=http://example.com" >> $GITHUB_ENV
+          APP_IP=http://example.com
           echo "::set-output name=app_url::$APP_IP"
 
       - name: update the github deployment status
