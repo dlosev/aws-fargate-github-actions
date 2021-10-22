@@ -2,14 +2,16 @@ name: PR delete
 
 on:
   pull_request:
-    types: [closed]
+    types: [closed unlabeled]
 
 env:
   AWS_REGION: eu-central-1
 
 jobs:
   delete:
-    if: contains(join(github.event.pull_request.labels.*.name), 'FargateStack')
+    if: |
+      (github.event.action == 'unlabeled' && contains(github.event.pull_request.labels.*.name, 'deploy') ||
+      contains(join(github.event.pull_request.labels.*.name), 'FargateStack')
 
     runs-on: ubuntu-latest
 
@@ -23,7 +25,14 @@ jobs:
 
       - name: delete AWS stack
         run: |
+          echo 'labels: "${{ join(github.event.pull_request.labels.*.name) }}"'
           cloudformationStackId=$(echo '${{ join(github.event.pull_request.labels.*.name) }}' | sed 's/.*[\^ ,]*\(FargateStack-[0-9]\{1,\}\).*/\1/')
           aws cloudformation delete-stack --stack-name $cloudformationStackId
           aws cloudformation wait stack-delete-complete --stack-name $cloudformationStackId
+          echo "CDK_STACK_ID=$cloudformationStackId" >> $GITHUB_ENV
 
+      - uses: actions-ecosystem/action-remove-labels@v1
+        env:
+          label: ${{ env.CDK_STACK_ID }}
+        with:
+          labels: ${{ env.label }}
