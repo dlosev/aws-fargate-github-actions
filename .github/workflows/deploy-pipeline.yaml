@@ -121,3 +121,4 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env_url: ${{ needs.job1.outputs.app_url }}
+          environment_url: ${{ needs.job1.outputs.app_url }}
