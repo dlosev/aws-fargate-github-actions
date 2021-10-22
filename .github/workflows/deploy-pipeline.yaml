@@ -3,7 +3,6 @@ name: PR deploy
 on:
   pull_request:
     types: [labeled]
-  push:
 
 # Prevent multiple workflows to be executed when PR has multiple labels
 # https://github.community/t/handling-multiple-pr-label-triggers/122093/4
@@ -18,7 +17,7 @@ env:
 
 jobs:
   deploy-aws:
-#    if: contains(join(github.event.pull_request.labels.*.name), 'deploy')
+    if: contains(join(github.event.pull_request.labels.*.name), 'deploy')
 
     runs-on: ubuntu-latest
 
@@ -102,6 +101,11 @@ jobs:
 #          echo "Application is available on http://$APP_IP"
 #        outputs:
 #          app_url: http://${{ APP_IP }}
+
+      - name: labeling PR
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: FargateStack-12345
 
       - name: show results
         id: result
