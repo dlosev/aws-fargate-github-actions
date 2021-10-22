@@ -9,9 +9,9 @@ env:
 
 jobs:
   delete:
-    if: |
-      (github.event.action == 'unlabeled' && contains(github.event.pull_request.labels.*.name, 'deploy') ||
-      contains(join(github.event.pull_request.labels.*.name), 'FargateStack')
+#    if: |
+#      (github.event.action == 'unlabeled' && contains(github.event.pull_request.labels.*.name, 'deploy') ||
+#      contains(join(github.event.pull_request.labels.*.name), 'FargateStack')
 
     runs-on: ubuntu-latest
 
