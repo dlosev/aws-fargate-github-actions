@@ -22,6 +22,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    outputs:
+      app_url: ${{ steps.result.outputs.app_url }}
+
     steps:
       - name: inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
@@ -104,8 +107,7 @@ jobs:
         id: result
         run: |
           echo "APP_IP=http://example.com" >> $GITHUB_ENV
-        outputs:
-          app_url: http://${{ APP_IP }}
+          echo "::set-output name=app_url::$APP_IP"
 
       - name: update the github deployment status
         uses: bobheadxi/deployments@v0.5.2
@@ -114,4 +116,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          env_url: ${{ steps.result.outputs.app_url }}
+          env_url: ${{ needs.job1.outputs.app_url }}
