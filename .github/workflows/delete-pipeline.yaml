@@ -2,16 +2,16 @@ name: PR delete
 
 on:
   pull_request:
-    types: [unlabeled closed]
+    types: [unlabeled, closed]
 
 env:
   AWS_REGION: eu-central-1
 
 jobs:
   delete:
-#    if: |
-#      (github.event.action == 'unlabeled' && contains(github.event.pull_request.labels.*.name, 'deploy') ||
-#      contains(join(github.event.pull_request.labels.*.name), 'FargateStack')
+    if: |
+      contains(join(github.event.pull_request.labels.*.name), 'FargateStack') &&
+      (github.event.action != 'unlabeled' || !contains(github.event.pull_request.labels.*.name, 'deploy')
 
     runs-on: ubuntu-latest
 
