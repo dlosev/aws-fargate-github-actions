@@ -21,9 +21,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    outputs:
-      app_url: ${{ steps.result.outputs.app_url }}
-
     steps:
       - name: inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
@@ -34,23 +31,23 @@ jobs:
       - name: checkout the files
         uses: actions/checkout@v2
 
-#      - name: Configure AWS credentials
-#        uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          aws-region: ${{ env.AWS_REGION }}
-#
-#      - name: Login to Amazon ECR
-#        id: login-ecr
-#        uses: aws-actions/amazon-ecr-login@v1
-#
-#      - name: Build, tag, and push image to Amazon ECR
-#        env:
-#          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#        run: |
-#          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-#          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: create a github deployment
         uses: bobheadxi/deployments@v0.5.2
@@ -62,57 +59,43 @@ jobs:
           ref: ${{ github.head_ref }}
           no_override: false
           transient: true
-#
-#      - name: register task definition
-#        run: |
-#          TASK_DEFINITION_ARN=$(aws ecs register-task-definition --cli-input-json file://./ecs-taskdef.json | jq --raw-output '.taskDefinition.taskDefinitionArn')
-#          echo "TASK_DEFINITION_ARN=$(echo $TASK_DEFINITION_ARN)" >> $GITHUB_ENV
-#          echo "CDK_STACK_NAME=FargateStack" >> $GITHUB_ENV
-#          echo "CDK_STACK_SHA=$(date +'%s')" >> $GITHUB_ENV
-#
-#      - name: cdk install
-#        run: |
-#          mkdir cdk && cd cdk
-#          npm -g install typescript aws-cdk
-#          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION }}
-#          cdk init app --language typescript
-#          rm -rf bin/*
-#          cp ../cdk.ts ./bin/
-#          npm install @aws-cdk/aws-ec2 @aws-cdk/aws-ecs @aws-cdk/custom-resources
-#
-#      - name: cdk deploy
-#        run: |
-#          cd cdk
-#          cdk deploy --require-approval never
-#
-#      - name: labeling PR
-#        uses: actions-ecosystem/action-add-labels@v1
-#        env:
-#          label: ${{ env.CDK_STACK_NAME }}-${{ env.CDK_STACK_SHA }}
-#        with:
-#          labels: ${{ env.label }}
 
-#      - name: show results
-#        id: result
-#        run: |
-#          APP_IP=$(aws cloudformation describe-stacks --stack-name "$CDK_STACK_NAME-$CDK_STACK_SHA" --query "Stacks[0].Outputs[?OutputKey=='publicIp'].OutputValue" --output text)
-#          echo "APP_IP=$APP_IP" >> $GITHUB_ENV
-#          echo -e "\nCloudformation stack ID: $CDK_STACK_NAME-$CDK_STACK_SHA"
-#          echo "Application is available on http://$APP_IP"
-#        outputs:
-#          app_url: http://${{ APP_IP }}
+      - name: register task definition
+        run: |
+          TASK_DEFINITION_ARN=$(aws ecs register-task-definition --cli-input-json file://./ecs-taskdef.json | jq --raw-output '.taskDefinition.taskDefinitionArn')
+          echo "TASK_DEFINITION_ARN=$(echo $TASK_DEFINITION_ARN)" >> $GITHUB_ENV
+          echo "CDK_STACK_NAME=FargateStack" >> $GITHUB_ENV
+          echo "CDK_STACK_SHA=$(date +'%s')" >> $GITHUB_ENV
+
+      - name: cdk install
+        run: |
+          mkdir cdk && cd cdk
+          npm -g install typescript aws-cdk
+          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION }}
+          cdk init app --language typescript
+          rm -rf bin/*
+          cp ../cdk.ts ./bin/
+          npm install @aws-cdk/aws-ec2 @aws-cdk/aws-ecs @aws-cdk/custom-resources
+
+      - name: cdk deploy
+        run: |
+          cd cdk
+          cdk deploy --require-approval never
 
       - name: labeling PR
         uses: actions-ecosystem/action-add-labels@v1
+        env:
+          label: ${{ env.CDK_STACK_NAME }}-${{ env.CDK_STACK_SHA }}
         with:
-          labels: FargateStack-12345
+          labels: ${{ env.label }}
 
       - name: show results
-        id: result
         run: |
-          echo "APP_IP=http://example.com" >> $GITHUB_ENV
-          APP_IP=http://example.com
-          echo "::set-output name=app_url::$APP_IP"
+          APP_IP=$(aws cloudformation describe-stacks --stack-name "$CDK_STACK_NAME-$CDK_STACK_SHA" --query "Stacks[0].Outputs[?OutputKey=='publicIp'].OutputValue" --output text)
+          echo "APP_IP=$APP_IP" >> $GITHUB_ENV
+          echo "APP_URL=http://$APP_IP" >> $GITHUB_ENV
+          echo -e "\nCloudformation stack ID: $CDK_STACK_NAME-$CDK_STACK_SHA"
+          echo "Application is available on $APP_URL"
 
       - name: update the github deployment status
         uses: bobheadxi/deployments@v0.5.2
@@ -121,4 +104,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          env_url: ${{ needs.deploy-aws.outputs.app_url }}
+          env_url: ${{ env.APP_URL }}

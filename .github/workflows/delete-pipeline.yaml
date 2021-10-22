@@ -2,7 +2,7 @@ name: PR delete
 
 on:
   pull_request:
-    types: [unlabeled, closed]
+    types: [closed, unlabeled]
 
 env:
   AWS_REGION: eu-central-1
@@ -25,7 +25,6 @@ jobs:
 
       - name: delete AWS stack
         run: |
-          echo 'labels: "${{ join(github.event.pull_request.labels.*.name) }}"'
           cloudformationStackId=$(echo '${{ join(github.event.pull_request.labels.*.name) }}' | sed 's/.*[\^ ,]*\(FargateStack-[0-9]\{1,\}\).*/\1/')
           aws cloudformation delete-stack --stack-name $cloudformationStackId
           aws cloudformation wait stack-delete-complete --stack-name $cloudformationStackId
