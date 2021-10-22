@@ -2,7 +2,7 @@ name: PR delete
 
 on:
   pull_request:
-    types: [closed unlabeled]
+    types: [unlabeled]
 
 env:
   AWS_REGION: eu-central-1
