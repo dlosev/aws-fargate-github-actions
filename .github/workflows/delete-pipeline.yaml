@@ -11,7 +11,7 @@ jobs:
   delete:
     if: |
       contains(join(github.event.pull_request.labels.*.name), 'FargateStack') &&
-      (github.event.action != 'unlabeled' || !contains(github.event.pull_request.labels.*.name, 'deploy')
+      (github.event.action != 'unlabeled' || !contains(github.event.pull_request.labels.*.name, 'deploy'))
 
     runs-on: ubuntu-latest
 
