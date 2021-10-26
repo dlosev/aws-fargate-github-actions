@@ -81,10 +81,6 @@
         {
           "name": "MYSQL_ROOT_PASSWORD",
           "valueFrom": "arn:aws:ssm:eu-central-1:505510851740:parameter/mysql-root-password"
-        },
-        {
-          "name": "MYSQL_DATABASE",
-          "valueFrom": "arn:aws:ssm:eu-central-1:505510851740:parameter/mysql-database"
         }
       ],
       "portMappings": [

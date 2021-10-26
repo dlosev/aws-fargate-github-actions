@@ -1,10 +1,11 @@
 #!/bin/bash
 
-composer require symfony/twig-bundle
-
 cd "${SYMFONY_PROJECT_NAME}"
 
+composer require symfony/twig-bundle
+
 cp -R /app/src /app/templates ./
+rm -rf /app/src /app/templates
 
 env
 
