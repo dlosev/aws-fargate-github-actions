@@ -1,51 +1,102 @@
 {
   "family": "FargateStack",
   "executionRoleArn": "arn:aws:iam::505510851740:role/FargateEcsTaskExecutionRole",
-  "containerDefinitions": [
-    {
-      "dnsSearchDomains": [],
-      "environmentFiles": [],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "secretOptions": [],
-        "options": {
-          "awslogs-group": "/ecs/fargateServiceLogGroup",
-          "awslogs-region": "eu-central-1",
-          "awslogs-stream-prefix": "fargate-service"
-        }
-      },
-      "entryPoint": [],
-      "portMappings": [
-        {
-          "hostPort": 80,
-          "protocol": "tcp",
-          "containerPort": 80
-        }
-      ],
-      "command": [],
-      "cpu": 0,
-      "environment": [],
-      "ulimits": [],
-      "dnsServers": [],
-      "mountPoints": [],
-      "secrets": [],
-      "dockerSecurityOptions": [],
-      "volumesFrom": [],
-      "image": "505510851740.dkr.ecr.eu-central-1.amazonaws.com/app",
-      "essential": true,
-      "links": [],
-      "extraHosts": [],
-      "dockerLabels": {},
-      "systemControls": [],
-      "name": "app"
-    }
-  ],
-  "placementConstraints": [],
   "requiresCompatibilities": [
     "FARGATE"
   ],
   "networkMode": "awsvpc",
   "cpu": "256",
   "memory": "512",
-  "volumes": []
+  "containerDefinitions": [
+    {
+      "image": "505510851740.dkr.ecr.eu-central-1.amazonaws.com/app",
+      "name": "app",
+      "essential": true,
+      "dependsOn": [
+        {
+          "containerName": "mysql",
+          "condition": "START"
+        }
+      ],
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "80"
+        },
+        {
+          "name": "SYMFONY_PROJECT_NAME",
+          "value": "test-app"
+        },
+        {
+          "name": "MARIADB_HOST",
+          "value": "127.0.0.1"
+        },
+        {
+          "name": "MARIADB_PORT_NUMBER",
+          "value": "3306"
+        },
+        {
+          "name": "MARIADB_USER",
+          "value": "root"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "MARIADB_PASSWORD",
+          "valueFrom": "arn:aws:ssm:eu-central-1:505510851740:parameter/mysql-root-password"
+        },
+        {
+          "name": "MARIADB_DATABASE",
+          "valueFrom": "arn:aws:ssm:eu-central-1:505510851740:parameter/mysql-database"
+        }
+      ],
+      "portMappings": [
+        {
+          "protocol": "tcp",
+          "containerPort": 80
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-region": "eu-central-1",
+          "awslogs-group": "/ecs/fargateServiceLogGroup",
+          "awslogs-stream-prefix": "symfony"
+        }
+      }
+    },
+    {
+      "image": "mysql:5.7",
+      "name": "mysql",
+      "essential": true,
+      "secrets": [
+        {
+          "name": "MYSQL_USER",
+          "valueFrom": "arn:aws:ssm:eu-central-1:505510851740:parameter/mysql-user"
+        },
+        {
+          "name": "MYSQL_PASSWORD",
+          "valueFrom": "arn:aws:ssm:eu-central-1:505510851740:parameter/mysql-password"
+        },
+        {
+          "name": "MYSQL_ROOT_PASSWORD",
+          "valueFrom": "arn:aws:ssm:eu-central-1:505510851740:parameter/mysql-root-password"
+        }
+      ],
+      "portMappings": [
+        {
+          "protocol": "tcp",
+          "containerPort": 3306
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-region": "eu-central-1",
+          "awslogs-group": "/ecs/fargateServiceLogGroup",
+          "awslogs-stream-prefix": "mysql"
+        }
+      }
+    }
+  ]
 }

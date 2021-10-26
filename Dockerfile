@@ -1,5 +1,9 @@
-FROM nginx
+FROM bitnami/symfony
 
-COPY html /usr/share/nginx/html
+ENV PORT=80
 
-#test
+COPY run.sh /
+COPY src ./src
+COPY templates ./templates
+
+EXPOSE $PORT
