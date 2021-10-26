@@ -9,8 +9,8 @@
   "memory": "512",
   "containerDefinitions": [
     {
-      "image": "bitnami/symfony",
-      "name": "symfony",
+      "image": "505510851740.dkr.ecr.eu-central-1.amazonaws.com/app",
+      "name": "app",
       "essential": true,
       "dependsOn": [
         {

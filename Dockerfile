@@ -4,4 +4,4 @@ ENV PORT=80
 
 COPY run.sh /
 
-EXPOSE 80
+EXPOSE $PORT
