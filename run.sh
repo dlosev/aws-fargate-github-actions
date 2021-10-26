@@ -4,6 +4,8 @@ composer require symfony/twig-bundle
 
 cd "${SYMFONY_PROJECT_NAME}"
 
+mv /app/src /app/templates ./
+
 echo '---------Initializing database start---------'
 
 php bin/console doctrine:database:create

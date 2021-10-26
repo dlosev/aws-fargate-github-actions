@@ -16,6 +16,8 @@ class FargateStack extends cdk.Stack {
             throw new Error('TASK_DEFINITION_ARN environment variable is missing');
         }
 
+        cdk.Tags.of(this).add('FargateStack', id);
+
         const vpc = new ec2.Vpc(this, appendPostfix("ecs-vpc"), {
             natGateways: 0,
             subnetConfiguration: [
