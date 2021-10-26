@@ -29,7 +29,7 @@
         },
         {
           "name": "MARIADB_HOST",
-          "value": "localhost"
+          "value": "127.0.0.1"
         },
         {
           "name": "MARIADB_PORT_NUMBER",
@@ -38,7 +38,7 @@
       ],
       "secrets": [
         {
-          "name": "MARIADB_USERNAME",
+          "name": "MARIADB_USER",
           "valueFrom": "arn:aws:ssm:eu-central-1:505510851740:parameter/mysql-user"
         },
         {
@@ -81,6 +81,10 @@
         {
           "name": "MYSQL_ROOT_PASSWORD",
           "valueFrom": "arn:aws:ssm:eu-central-1:505510851740:parameter/mysql-root-password"
+        },
+        {
+          "name": "MYSQL_DATABASE",
+          "valueFrom": "arn:aws:ssm:eu-central-1:505510851740:parameter/mysql-database"
         }
       ],
       "portMappings": [

@@ -4,7 +4,7 @@ composer require symfony/twig-bundle
 
 cd "${SYMFONY_PROJECT_NAME}"
 
-mv -f /app/src /app/templates ./
+cp -R /app/src /app/templates ./
 
 env
 
