@@ -26,8 +26,15 @@ jobs:
       - name: delete AWS stack
         run: |
           cloudformationStackId=$(echo '${{ join(github.event.pull_request.labels.*.name) }}' | sed 's/.*[\^ ,]*\(FargateStack-[0-9]\{1,\}\).*/\1/')
+
           aws cloudformation delete-stack --stack-name $cloudformationStackId
           aws cloudformation wait stack-delete-complete --stack-name $cloudformationStackId
+
+          taskDefinitions=$(aws resourcegroupstaggingapi get-resources --resource-type-filters ecs:task-definition --tag-filters Key=CdkStackId,Values=$cloudformationStackId --query 'ResourceTagMappingList[*].ResourceARN' --output text)
+          for taskDefinition in $taskDefinitions; do
+            aws ecs deregister-task-definition --task-definition $taskDefinition --query 'taskDefinition.taskDefinitionArn' --output text
+          done
+
           echo "CDK_STACK_ID=$cloudformationStackId" >> $GITHUB_ENV
 
       - uses: actions-ecosystem/action-remove-labels@v1

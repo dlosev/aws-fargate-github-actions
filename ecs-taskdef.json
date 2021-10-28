@@ -1,6 +1,6 @@
 {
   "family": "FargateStack",
-  "executionRoleArn": "arn:aws:iam::505510851740:role/FargateEcsTaskExecutionRole",
+  "executionRoleArn": "$ECS_ROLE",
   "requiresCompatibilities": [
     "FARGATE"
   ],
@@ -9,7 +9,7 @@
   "memory": "512",
   "containerDefinitions": [
     {
-      "image": "505510851740.dkr.ecr.eu-central-1.amazonaws.com/app",
+      "image": "$IMAGE",
       "name": "app",
       "essential": true,
       "dependsOn": [
@@ -28,26 +28,24 @@
           "value": "test-app"
         },
         {
+          "name": "MARIADB_USER",
+          "value": "$DATABASE_USER"
+        },
+        {
+          "name": "MARIADB_PASSWORD",
+          "value": "$DATABASE_PASSWORD"
+        },
+        {
+          "name": "MARIADB_DATABASE",
+          "value": "$DATABASE_NAME"
+        },
+        {
           "name": "MARIADB_HOST",
-          "value": "127.0.0.1"
+          "value": "$DATABASE_HOST"
         },
         {
           "name": "MARIADB_PORT_NUMBER",
           "value": "3306"
-        },
-        {
-          "name": "MARIADB_USER",
-          "value": "root"
-        }
-      ],
-      "secrets": [
-        {
-          "name": "MARIADB_PASSWORD",
-          "valueFrom": "arn:aws:ssm:eu-central-1:505510851740:parameter/mysql-root-password"
-        },
-        {
-          "name": "MARIADB_DATABASE",
-          "valueFrom": "arn:aws:ssm:eu-central-1:505510851740:parameter/mysql-database"
         }
       ],
       "portMappings": [
@@ -69,18 +67,10 @@
       "image": "mysql:5.7",
       "name": "mysql",
       "essential": true,
-      "secrets": [
-        {
-          "name": "MYSQL_USER",
-          "valueFrom": "arn:aws:ssm:eu-central-1:505510851740:parameter/mysql-user"
-        },
-        {
-          "name": "MYSQL_PASSWORD",
-          "valueFrom": "arn:aws:ssm:eu-central-1:505510851740:parameter/mysql-password"
-        },
+      "environment": [
         {
           "name": "MYSQL_ROOT_PASSWORD",
-          "valueFrom": "arn:aws:ssm:eu-central-1:505510851740:parameter/mysql-root-password"
+          "value": "$DATABASE_PASSWORD"
         }
       ],
       "portMappings": [

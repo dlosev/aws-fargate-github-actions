@@ -39,15 +39,18 @@ class FargateStack extends cdk.Stack {
         securityGroup.connections.allowFromAnyIpv4(ec2.Port.tcp(80));
 
         // Dummy task definition, will be replaced by ARN of the existing task definition
-        const dummyTaskDefinition = new ecs.TaskDefinition(this, "dummyTask", {
+        const dummyTaskDefinition = new ecs.TaskDefinition(this, appendPostfix("dummyTask"), {
+                family: "dummyTask",
                 compatibility: ecs.Compatibility.FARGATE,
                 cpu: "256",
-                memoryMiB: "512",
+                memoryMiB: "512"
             }
         );
         dummyTaskDefinition.addContainer("dummyContainer", {
             image: ecs.ContainerImage.fromRegistry("dummyImage"),
         });
+
+        cdk.Tags.of(dummyTaskDefinition).add('CdkStackId', id);
 
         const service = new ecs.FargateService(this, "service", {
             cluster,
@@ -109,19 +112,12 @@ class FargateStack extends cdk.Stack {
 
 const app = new cdk.App();
 
-const time = new Date().getTime();
-
-const cdkStackName = process.env.CDK_STACK_NAME;
-if (!cdkStackName) {
-    throw new Error('CDK_STACK_NAME environment variable is missing');
+const cdkStackId = process.env.CDK_STACK_ID;
+if (!cdkStackId) {
+    throw new Error('CDK_STACK_ID environment variable is missing');
 }
 
-const cdkStackSha = process.env.CDK_STACK_SHA;
-if (!cdkStackSha) {
-    throw new Error('CDK_STACK_SHA environment variable is missing');
-}
-
-new FargateStack(app, `${cdkStackName}-${cdkStackSha}`, cdkStackSha, {
+new FargateStack(app, cdkStackId, `${cdkStackId.split('-')[1] || new Date().getTime()}`, {
     /* If you don't specify 'env', this stack will be environment-agnostic.
      * Account/Region-dependent features and context lookups will not work,
      * but a single synthesized template can be deployed anywhere. */
