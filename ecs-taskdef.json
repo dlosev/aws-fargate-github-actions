@@ -6,12 +6,14 @@
   ],
   "networkMode": "awsvpc",
   "cpu": "256",
-  "memory": "512",
+  "memory": "2048",
   "containerDefinitions": [
     {
       "image": "$IMAGE",
       "name": "app",
       "essential": true,
+      "cpu": 200,
+      "memoryReservation": 1536,
       "dependsOn": [
         {
           "containerName": "mysql",
